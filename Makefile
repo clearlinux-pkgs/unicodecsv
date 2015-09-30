@@ -1,5 +1,5 @@
 PKG_NAME := unicodecsv
-URL := https://github.com/jdunck/python-unicodecsv/archive/0.13.0.tar.gz
+URL := https://pypi.python.org/packages/source/u/unicodecsv/unicodecsv-0.14.1.tar.gz
 ARCHIVES :=
 
 include ../common/Makefile.common
