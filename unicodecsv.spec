@@ -4,7 +4,7 @@
 #
 Name     : unicodecsv
 Version  : 0.14.1
-Release  : 11
+Release  : 12
 URL      : https://pypi.python.org/packages/source/u/unicodecsv/unicodecsv-0.14.1.tar.gz
 Source0  : https://pypi.python.org/packages/source/u/unicodecsv/unicodecsv-0.14.1.tar.gz
 Summary  : Python2's stdlib csv module is nice, but it doesn't support unicode. This module is a drop-in replacement which *does*.
@@ -40,13 +40,16 @@ python components for the unicodecsv package.
 %setup -q -n unicodecsv-0.14.1
 
 %build
+export LANG=C
+export SOURCE_DATE_EPOCH=1484581772
 python2 setup.py build -b py2
 python3 setup.py build -b py3
 
 %install
+export SOURCE_DATE_EPOCH=1484581772
 rm -rf %{buildroot}
-python2 -tt setup.py build -b py2 install --root=%{buildroot}
-python3 -tt setup.py build -b py3 install --root=%{buildroot}
+python2 -tt setup.py build -b py2 install --root=%{buildroot} --force
+python3 -tt setup.py build -b py3 install --root=%{buildroot} --force
 
 %files
 %defattr(-,root,root,-)
