@@ -4,9 +4,9 @@
 #
 Name     : unicodecsv
 Version  : 0.14.1
-Release  : 13
-URL      : https://pypi.python.org/packages/source/u/unicodecsv/unicodecsv-0.14.1.tar.gz
-Source0  : https://pypi.python.org/packages/source/u/unicodecsv/unicodecsv-0.14.1.tar.gz
+Release  : 14
+URL      : http://pypi.debian.net/unicodecsv/unicodecsv-0.14.1.tar.gz
+Source0  : http://pypi.debian.net/unicodecsv/unicodecsv-0.14.1.tar.gz
 Summary  : Python2's stdlib csv module is nice, but it doesn't support unicode. This module is a drop-in replacement which *does*.
 Group    : Development/Tools
 License  : BSD-2-Clause
@@ -24,9 +24,16 @@ BuildRequires : traceback2-python
 BuildRequires : unittest2-python
 
 %description
-unicodecsv
 ==========
-The unicodecsv is a drop-in replacement for Python 2.7's csv module which supports unicode strings without a hassle.  Supported versions are python 2.7, 3.3, 3.4, 3.5, and pypy 2.4.0.
+        
+        The unicodecsv is a drop-in replacement for Python 2.7's csv module which supports unicode strings without a hassle.  Supported versions are python 2.7, 3.3, 3.4, 3.5, and pypy 2.4.0.
+        
+        More fully
+        ----------
+        
+        Python 2's csv module doesn't easily deal with unicode strings, leading to the dreaded "'ascii' codec can't encode characters in position ..." exception.
+        
+        You can work around it by encoding everything just before calling write (or just after read), but why not add support to the serializer?
 
 %package python
 Summary: python components for the unicodecsv package.
@@ -40,20 +47,27 @@ python components for the unicodecsv package.
 %setup -q -n unicodecsv-0.14.1
 
 %build
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1484581772
+export SOURCE_DATE_EPOCH=1503082454
 python2 setup.py build -b py2
 python3 setup.py build -b py3
 
 %install
-export SOURCE_DATE_EPOCH=1484581772
+export SOURCE_DATE_EPOCH=1503082454
 rm -rf %{buildroot}
 python2 -tt setup.py build -b py2 install --root=%{buildroot} --force
 python3 -tt setup.py build -b py3 install --root=%{buildroot} --force
+echo ----[ mark ]----
+cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
+echo ----[ mark ]----
 
 %files
 %defattr(-,root,root,-)
 
 %files python
 %defattr(-,root,root,-)
-/usr/lib/python*/*
+/usr/lib/python2*/*
+/usr/lib/python3*/*
