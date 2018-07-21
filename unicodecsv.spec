@@ -4,7 +4,7 @@
 #
 Name     : unicodecsv
 Version  : 0.14.1
-Release  : 14
+Release  : 15
 URL      : http://pypi.debian.net/unicodecsv/unicodecsv-0.14.1.tar.gz
 Source0  : http://pypi.debian.net/unicodecsv/unicodecsv-0.14.1.tar.gz
 Summary  : Python2's stdlib csv module is nice, but it doesn't support unicode. This module is a drop-in replacement which *does*.
