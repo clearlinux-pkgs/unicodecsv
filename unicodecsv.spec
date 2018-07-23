@@ -4,13 +4,15 @@
 #
 Name     : unicodecsv
 Version  : 0.14.1
-Release  : 15
-URL      : http://pypi.debian.net/unicodecsv/unicodecsv-0.14.1.tar.gz
-Source0  : http://pypi.debian.net/unicodecsv/unicodecsv-0.14.1.tar.gz
+Release  : 16
+URL      : https://files.pythonhosted.org/packages/6f/a4/691ab63b17505a26096608cc309960b5a6bdf39e4ba1a793d5f9b1a53270/unicodecsv-0.14.1.tar.gz
+Source0  : https://files.pythonhosted.org/packages/6f/a4/691ab63b17505a26096608cc309960b5a6bdf39e4ba1a793d5f9b1a53270/unicodecsv-0.14.1.tar.gz
 Summary  : Python2's stdlib csv module is nice, but it doesn't support unicode. This module is a drop-in replacement which *does*.
 Group    : Development/Tools
 License  : BSD-2-Clause
+Requires: unicodecsv-python3
 Requires: unicodecsv-python
+BuildRequires : buildreq-distutils3
 BuildRequires : linecache2-python
 BuildRequires : pbr
 BuildRequires : pip
@@ -38,9 +40,19 @@ BuildRequires : unittest2-python
 %package python
 Summary: python components for the unicodecsv package.
 Group: Default
+Requires: unicodecsv-python3
 
 %description python
 python components for the unicodecsv package.
+
+
+%package python3
+Summary: python3 components for the unicodecsv package.
+Group: Default
+Requires: python3-core
+
+%description python3
+python3 components for the unicodecsv package.
 
 
 %prep
@@ -51,15 +63,12 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1503082454
-python2 setup.py build -b py2
+export SOURCE_DATE_EPOCH=1532377865
 python3 setup.py build -b py3
 
 %install
-export SOURCE_DATE_EPOCH=1503082454
 rm -rf %{buildroot}
-python2 -tt setup.py build -b py2 install --root=%{buildroot} --force
-python3 -tt setup.py build -b py3 install --root=%{buildroot} --force
+python3 -tt setup.py build -b py3 install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
@@ -69,5 +78,7 @@ echo ----[ mark ]----
 
 %files python
 %defattr(-,root,root,-)
-/usr/lib/python2*/*
+
+%files python3
+%defattr(-,root,root,-)
 /usr/lib/python3*/*
