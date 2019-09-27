@@ -4,19 +4,18 @@
 #
 Name     : unicodecsv
 Version  : 0.14.1
-Release  : 22
+Release  : 23
 URL      : https://files.pythonhosted.org/packages/6f/a4/691ab63b17505a26096608cc309960b5a6bdf39e4ba1a793d5f9b1a53270/unicodecsv-0.14.1.tar.gz
 Source0  : https://files.pythonhosted.org/packages/6f/a4/691ab63b17505a26096608cc309960b5a6bdf39e4ba1a793d5f9b1a53270/unicodecsv-0.14.1.tar.gz
 Summary  : Python2's stdlib csv module is nice, but it doesn't support unicode. This module is a drop-in replacement which *does*.
 Group    : Development/Tools
 License  : BSD-2-Clause
-Requires: unicodecsv-python3
-Requires: unicodecsv-python
+Requires: unicodecsv-python = %{version}-%{release}
+Requires: unicodecsv-python3 = %{version}-%{release}
 BuildRequires : buildreq-distutils3
 BuildRequires : linecache2-python
 BuildRequires : pbr
 BuildRequires : pip
-BuildRequires : python-dev
 BuildRequires : python3-dev
 BuildRequires : setuptools
 BuildRequires : six
@@ -40,7 +39,7 @@ BuildRequires : unittest2-python
 %package python
 Summary: python components for the unicodecsv package.
 Group: Default
-Requires: unicodecsv-python3
+Requires: unicodecsv-python3 = %{version}-%{release}
 
 %description python
 python components for the unicodecsv package.
@@ -62,13 +61,20 @@ python3 components for the unicodecsv package.
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1532377865
-python3 setup.py build -b py3
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1569616669
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
+export MAKEFLAGS=%{?_smp_mflags}
+python3 setup.py build
 
 %install
+export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
-python3 -tt setup.py build -b py3 install --root=%{buildroot}
+python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
