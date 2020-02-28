@@ -4,7 +4,7 @@
 #
 Name     : unicodecsv
 Version  : 0.14.1
-Release  : 25
+Release  : 26
 URL      : https://files.pythonhosted.org/packages/6f/a4/691ab63b17505a26096608cc309960b5a6bdf39e4ba1a793d5f9b1a53270/unicodecsv-0.14.1.tar.gz
 Source0  : https://files.pythonhosted.org/packages/6f/a4/691ab63b17505a26096608cc309960b5a6bdf39e4ba1a793d5f9b1a53270/unicodecsv-0.14.1.tar.gz
 Summary  : Python2's stdlib csv module is nice, but it doesn't support unicode. This module is a drop-in replacement which *does*.
@@ -25,16 +25,33 @@ BuildRequires : traceback2-python
 BuildRequires : unittest2-python
 
 %description
+unicodecsv
 ==========
-        
-        The unicodecsv is a drop-in replacement for Python 2.7's csv module which supports unicode strings without a hassle.  Supported versions are python 2.7, 3.3, 3.4, 3.5, and pypy 2.4.0.
-        
-        More fully
-        ----------
-        
-        Python 2's csv module doesn't easily deal with unicode strings, leading to the dreaded "'ascii' codec can't encode characters in position ..." exception.
-        
-        You can work around it by encoding everything just before calling write (or just after read), but why not add support to the serializer?
+
+The unicodecsv is a drop-in replacement for Python 2.7's csv module which supports unicode strings without a hassle.  Supported versions are python 2.7, 3.3, 3.4, 3.5, and pypy 2.4.0.
+
+More fully
+----------
+
+Python 2's csv module doesn't easily deal with unicode strings, leading to the dreaded "'ascii' codec can't encode characters in position ..." exception.
+
+You can work around it by encoding everything just before calling write (or just after read), but why not add support to the serializer?
+
+.. code-block:: pycon
+
+   >>> import unicodecsv as csv
+   >>> from io import BytesIO
+   >>> f = BytesIO()
+   >>> w = csv.writer(f, encoding='utf-8')
+   >>> _ = w.writerow((u'é', u'ñ'))
+   >>> _ = f.seek(0)
+   >>> r = csv.reader(f, encoding='utf-8')
+   >>> next(r) == [u'é', u'ñ']
+   True
+
+Note that unicodecsv expects a bytestream, not unicode -- so there's no need to use `codecs.open` or similar wrappers.  Plain `open(..., 'rb')` will do.
+
+(Version 0.14.0 dropped support for python 2.6, but 0.14.1 added it back.  See c0b7655248c4249 for the mistaken, breaking change.)
 
 %package python
 Summary: python components for the unicodecsv package.
@@ -49,6 +66,7 @@ python components for the unicodecsv package.
 Summary: python3 components for the unicodecsv package.
 Group: Default
 Requires: python3-core
+Provides: pypi(unicodecsv)
 
 %description python3
 python3 components for the unicodecsv package.
@@ -56,13 +74,15 @@ python3 components for the unicodecsv package.
 
 %prep
 %setup -q -n unicodecsv-0.14.1
+cd %{_builddir}/unicodecsv-0.14.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1569616669
+export SOURCE_DATE_EPOCH=1582906703
+# -Werror is for werrorists
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
